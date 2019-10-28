@@ -101,6 +101,13 @@ BEGIN
 			' WHERE ' || pk_column || ' = $1.' || quote_ident(pk_column) || 
 			' AND upper_inf(temporal_period) RETURNING temporal_period')
 			USING OLD INTO existing_range;
+			
+			-- RAISE INFO 'existing_range: %', existing_range;
+			IF upper(existing_range) IS NULL THEN
+				-- No existing historical record found; so historical tables was installed
+				-- at a later point in time. Start historical record from current timestamp
+				existing_range := tstzrange(NULL, time_stamp_to_use, '[)');
+			END IF;
 		
 	END IF;
 
