@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-set -eux
+set -o errexit
+set -o pipefail
+set -o nounset
+# set -o xtrace
 
 echo "Running tests:"
 
@@ -16,17 +19,20 @@ done
 
 mkdir -p result
 
+TEMPORAL_TRIGGER_FUNCTIONS="temporal_trigger_function temporal_trigger_function_optimized"
 TESTS="basic existing_table"
 
-for name in $TESTS; do
-	echo ""
-	echo $name
-	echo ""
-	createdb temporal_tables_test
-	psql temporal_tables_test -q -f ../temporal_trigger_function.sql
+for temporal_trigger_function in $TEMPORAL_TRIGGER_FUNCTIONS; do
+  for name in $TESTS; do
+    echo ""
+    echo "${temporal_trigger_function}: ${name}"
+    echo ""
+    createdb temporal_tables_test
+    psql temporal_tables_test -q -f "../${temporal_trigger_function}.sql"
 
-	psql temporal_tables_test -X -a -q --set=SHOW_CONTEXT=never < sql/$name.sql > result/$name.out 2>&1
-	diff -b expected/$name.out result/$name.out
-	dropdb temporal_tables_test
-	
+    psql temporal_tables_test -X -a -q --set=SHOW_CONTEXT=never < sql/$name.sql > result/$name.out 2>&1
+    diff -b expected/$name.out result/$name.out
+    dropdb temporal_tables_test
+
+  done
 done
