@@ -1,7 +1,7 @@
 \timing off
 \set ON_ERROR_STOP on
 
-CREATE EXTENSION temporal_tables;
+\include /pg/test/performance/nearform_temporal_tables_nochecks/versioning_function_nochecks.sql
 
 CREATE TABLE subscriptions
 (

@@ -1,4 +1,7 @@
 \timing off
+\set ON_ERROR_STOP on
+
+\include /pg/temporal_trigger_function_debug.sql
 
 CREATE TABLE public.subscriptions
 (

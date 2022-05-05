@@ -1,4 +1,7 @@
 \timing off
+\set ON_ERROR_STOP on
+
+\include /pg/test/performance/nearform_temporal_tables/versioning_function.sql
 
 CREATE TABLE subscriptions
 (
