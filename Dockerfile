@@ -2,8 +2,10 @@ FROM postgres:10-alpine
 
 ENV LANG=C.UTF-8
 
-RUN apk add --no-cache pgxnclient
-RUN pgxn install temporal_tables
+RUN apk update \
+  && apk add py-pip make gcc musl-dev \
+  && pip install pgxnclient \
+  && pgxn install temporal_tables
 
 RUN mkdir -p /pg
 COPY . /pg
